@@ -1,0 +1,220 @@
+# Build envsub on all platforms.
+# Stolen from uv, adapted
+#
+# Generates both wheels (for PyPI) and archived binaries (for GitHub releases).
+#
+# Assumed to run as a subworkflow of .github/workflows/release.yml; specifically, as a local
+# artifacts job within `cargo-dist`.
+name: "Build binaries"
+
+on:
+  workflow_call:
+    inputs:
+      plan:
+        required: true
+        type: string
+  pull_request:
+    paths:
+      # When we change pyproject.toml, we want to ensure that the maturin builds still work.
+      - pyproject.toml
+      # And when we change this workflow itself...
+      - .github/workflows/build-binaries.yml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PACKAGE_NAME: envsub
+  MODULE_NAME: envsub
+  PYTHON_VERSION: "3.12"
+  CARGO_INCREMENTAL: 0
+  CARGO_NET_RETRY: 10
+  CARGO_TERM_COLOR: always
+  RUSTUP_MAX_RETRIES: 10
+
+jobs:
+  sdist:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-build') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: "Build sdist"
+        uses: PyO3/maturin-action@v1
+        with:
+          command: sdist
+          args: --out distPYTHON_VERSION
+      - name: "Test sdist"
+        run: |
+          pip install dist/${{ env.PACKAGE_NAME }}-*.tar.gz --force-reinstall
+          echo 'Hello, ${USER}'| python -m ${{ env.MODULE_NAME }}
+      - name: "Upload sdist"
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-sdist
+          path: dist
+
+  macos-x86_64:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-build') }}
+    runs-on: macos-12-large
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          architecture: x64
+      - name: "Build wheels - x86_64"
+        uses: PyO3/maturin-action@v1
+        with:
+          target: x86_64
+          args: --release --locked --out dist
+      - name: "Test sdist"
+        run: |
+          pip install dist/${{ env.PACKAGE_NAME }}-*.tar.gz --force-reinstall
+          echo 'Hello, ${USER}'| python -m ${{ env.MODULE_NAME }}
+      - name: "Upload wheels"
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-macos-x86_64
+          path: dist
+
+  macos-aarch64:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-build') }}
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          architecture: arm64
+      - name: "Build wheels - aarch64"
+        uses: PyO3/maturin-action@v1
+        with:
+          target: aarch64
+          args: --release --locked --out dist
+      - name: "Test wheel - aarch64"
+        run: |
+          pip install dist/${{ env.PACKAGE_NAME }}-*.whl --force-reinstall
+          ${{ env.MODULE_NAME }} --help
+          python -m ${{ env.MODULE_NAME }} --help
+          uvx --help
+      - name: "Upload wheels"
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-aarch64-apple-darwin
+          path: dist
+
+  windows:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-build') }}
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        platform:
+          - target: x86_64-pc-windows-msvc
+            arch: x64
+          - target: i686-pc-windows-msvc
+            arch: x86
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          architecture: ${{ matrix.platform.arch }}
+      - name: "Build wheels"
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.platform.target }}
+          args: --release --locked --out dist
+      - name: "Test wheel"
+        if: ${{ !startsWith(matrix.platform.target, 'aarch64') }}
+        shell: bash
+        run: |
+          python -m pip install dist/${{ env.PACKAGE_NAME }}-*.whl --force-reinstall
+          echo 'Hello, ${USER}'| python -m ${{ env.MODULE_NAME }}
+      - name: "Upload wheels"
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.platform.target }}
+          path: dist
+
+  linux:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-build') }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu
+          - i686-unknown-linux-gnu
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          architecture: x64
+      - name: "Build wheels"
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          manylinux: auto
+          args: --release --locked --out dist
+      - name: "Test wheel"
+        if: ${{ startsWith(matrix.target, 'x86_64') }}
+        run: |
+          pip install dist/${{ env.PACKAGE_NAME }}-*.whl --force-reinstall
+          echo 'Hello, ${USER}'| python -m ${{ env.MODULE_NAME }}
+      - name: "Upload wheels"
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.target }}
+          path: dist
+
+  musllinux:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-build') }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - x86_64-unknown-linux-musl
+          - i686-unknown-linux-musl
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          architecture: x64
+      - name: "Build wheels"
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          manylinux: musllinux_1_1
+          args: --release --locked --out dist
+      - name: "Test wheel"
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        uses: addnab/docker-run-action@v3
+        with:
+          image: alpine:3.12
+          options: -v ${{ github.workspace }}:/io -w /io
+          run: |
+            apk add python3
+            python3 -m venv .venv
+            .venv/bin/pip install --upgrade pip
+            .venv/bin/pip install ${{ env.PACKAGE_NAME }} --no-index --find-links dist/ --force-reinstall
+            echo 'Hello, ${USER}'| python -m ${{ env.MODULE_NAME }}
+      - name: "Upload wheels"
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.target }}
+          path: dist
