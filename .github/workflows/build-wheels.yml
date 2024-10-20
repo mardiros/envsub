@@ -8,6 +8,8 @@
 name: "Build binaries"
 
 on:
+  push:
+    branches: [ main ]
   workflow_call:
     inputs:
       plan:
