@@ -12,7 +12,7 @@ pyo3 = { version = "0.22.5", features = ["extension-module"] }
 
 [lib]
 name = "envsub"
-crate-type = ["cdylib"]
+crate-type = ["staticlib"]
 
 [package.metadata.maturin]
 bindings = "pyo3"
