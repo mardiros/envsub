@@ -1,0 +1,35 @@
+[project]
+name = "envsub"
+version = "0.1.0"
+description = "A text preprocessing tool with environment variable substitution."
+readme = "README.md"
+license = "BSD-3-Clause"
+authors = [
+    { name = "Guillaume Gauvrit", email = "guillaume@gauvr.it" }
+]
+requires-python = ">=3.9"
+keywords = ["environment", "substitution", "variables"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Rust",
+]
+dependencies = []
+
+[project.scripts]
+envsub = "envsub:sub"
+
+[tool.maturin]
+bindings = "pyo3"
+
+[tool.uv]
+dev-dependencies = [
+    "maturin>=1.7.4",
+    "pip>=24.2",
+    "pytest>=8.3.3",
+    "pyyaml>=6.0.2",
+]
+
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"

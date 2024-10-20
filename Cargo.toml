@@ -1,0 +1,21 @@
+[package]
+name = "envsub"
+version = "0.1.0"
+authors = ["Guillaume Gauvrit <guillaume@gauvr.it>"]
+edition = "2021"
+description = "A text preprocessing tool with environment variable substitution and default value support."
+license = "BSD-3-Clause"
+readme = "README.md"
+
+[dependencies]
+pyo3 = { version = "0.22.5", features = ["extension-module"] }
+
+[lib]
+name = "envsub"
+crate-type = ["cdylib"]
+
+[package.metadata.maturin]
+bindings = "pyo3"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
