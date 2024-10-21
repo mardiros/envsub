@@ -1,10 +1,6 @@
-# Build envsub on all platforms.
-# Stolen from uv, adapted
+# Build envsub tarballs for supported python.
 #
-# Generates both wheels (for PyPI) and archived binaries (for GitHub releases).
-#
-# Assumed to run as a subworkflow of .github/workflows/release.yml; specifically, as a local
-# artifacts job within `cargo-dist`.
+# Adapted from uv and from pydantic-core CI
 name: "Build tarball"
 
 on:
@@ -35,18 +31,6 @@ jobs:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-build') }}
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version:
-          - '3.9'
-          - '3.10'
-          - '3.11'
-          - '3.12'
-          - '3.13'
-          - 'pypy3.9'
-          - 'pypy3.10'
-
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -56,7 +40,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           command: sdist
-          args: --out dist PYTHON_VERSION
+          args: --out dist
       - name: "Test sdist"
         run: |
           pip install dist/${{ env.PACKAGE_NAME }}-*.tar.gz --force-reinstall
