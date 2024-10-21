@@ -1,9 +1,5 @@
-# Build envsub on all platforms.
+# Build wheels envsub on all platforms.
 #
-# Generates both wheels (for PyPI) and archived binaries (for GitHub releases).
-#
-# Assumed to run as a subworkflow of .github/workflows/release.yml; specifically, as a local
-# artifacts job within `cargo-dist`.
 # Adapted from uv and from pydantic-core CI
 name: "Build wheels"
 
@@ -13,12 +9,12 @@ on:
       plan:
         required: true
         type: string
-  pull_request:
-    paths:
-      # When we change pyproject.toml, we want to ensure that the maturin builds still work.
-      - pyproject.toml
-      # And when we change this workflow itself...
-      - .github/workflows/build-wheels.yml
+  # pull_request:
+  #   paths:
+  #     # When we change pyproject.toml, we want to ensure that the maturin builds still work.
+  #     - pyproject.toml
+  #     # And when we change this workflow itself...
+  #     - .github/workflows/build-wheels.yml
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
