@@ -56,7 +56,8 @@ jobs:
 
   publish-pypi:
     needs:
-      - plan
+      - build-wheels
+      - build-sdist
     uses: ./.github/workflows/publish-pypi.yml
     with:
       release-version: ${{ needs.plan.outputs.release_version }}
