@@ -15,6 +15,7 @@ impl RustTextIOWrapper {
         Self { inner: input }
     }
 
+    #[pyo3(signature = (_size=-1))]
     fn read<'p>(slf: PyRef<'p, Self>, py: Python<'p>, _size: i32) -> PyResult<String> {
         let result = slf.inner.call0(py)?;
         let py_str: &str = result.extract(py)?;

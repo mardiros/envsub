@@ -6,7 +6,7 @@ def main():
     cnt = 0
     while True:
         cnt += 1
-        res = sub(sys.stdin).read(-1)
+        res = sub(sys.stdin).read()
         if not res:
             return
         else:
