@@ -7,19 +7,19 @@ name: "Publish to PyPI"
 on:
   workflow_call:
     inputs:
-      plan:
+      release-version:
         required: true
         type: string
+      dry-run:
+        required: true
+        type: boolean
 
 jobs:
   pypi-publish:
     name: Upload to PyPI
     runs-on: ubuntu-latest
-    environment:
-      name: release
-    permissions:
-      # For PyPI's trusted publishing.
-      id-token: write
+    if: ${{ !inputs.dry-run }}
+
     steps:
       - name: "Install uv"
         uses: astral-sh/setup-uv@v3
@@ -29,4 +29,6 @@ jobs:
           path: dist
           merge-multiple: true
       - name: Publish to PyPi
+        env:
+          export UV_PUBLISH_TOKEN=${{ secrets.PYPI_TOKEN }}
         run: uv publish -v dist/*

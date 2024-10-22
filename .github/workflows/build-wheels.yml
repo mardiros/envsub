@@ -6,15 +6,18 @@ name: "Build wheels"
 on:
   workflow_call:
     inputs:
-      plan:
+      release-version:
         required: true
         type: string
-  # pull_request:
-  #   paths:
-  #     # When we change pyproject.toml, we want to ensure that the maturin builds still work.
-  #     - pyproject.toml
-  #     # And when we change this workflow itself...
-  #     - .github/workflows/build-wheels.yml
+      dry-run:
+        required: true
+        type: boolean
+  pull_request:
+    paths:
+      # When we change pyproject.toml, we want to ensure that the maturin builds still work.
+      - pyproject.toml
+      # And when we change this workflow itself...
+      - .github/workflows/build-wheels.yml
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -25,8 +28,6 @@ jobs:
 
   build:
     name: build on ${{ matrix.os }} (${{ matrix.target }} - ${{ matrix.interpreter || 'all' }}${{ matrix.os == 'linux' && format(' - {0}', matrix.manylinux == 'auto' && 'manylinux' || matrix.manylinux) || '' }})
-
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-build') }}
 
     strategy:
       fail-fast: false

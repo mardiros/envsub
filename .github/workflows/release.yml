@@ -2,47 +2,65 @@ name: Release
 permissions:
   "contents": "write"
 
-
 on:
+  push:
+    tags:
+      - 'v*'       # Automatically trigger on version tags
+      - 'dry-run'
+
   workflow_dispatch:
     inputs:
       tag:
-        description: Release Tag
+        description: "Release Tag"
         required: true
-        default: dry-run
+        default: "dry-run"
         type: string
 
 jobs:
   plan:
-    runs-on: "ubuntu-20.04"
+    runs-on: ubuntu-latest
     outputs:
-      val: ${{ steps.plan.outputs.manifest }}
-      tag: ${{ (inputs.tag != 'dry-run' && inputs.tag) || '' }}
-      tag-flag: ${{ inputs.tag && inputs.tag != 'dry-run' && format('--tag={0}', inputs.tag) || '' }}
-      publishing: ${{ inputs.tag && inputs.tag != 'dry-run' }}
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      release_version: "release-version.outputs.version"
+      dry_run: "release-version.outputs.dry_run"
+
     steps:
-      - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set Release Version
+      id: release-version
+      run: |
+        if [ "${{ github.event_name }}" == "push" ]; then
+          echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          echo "dry_run="${{ github.ref_name }} == 'dry-run'" >> $GITHUB_OUTPUT
+        else
+          echo "version=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+          echo "dry_run="${{ github.event.inputs.tag }} == 'dry-run'" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Display Release Version
+      run: echo "The release version is ${{ steps.release-version.outputs.version }}"
+
 
   build-wheels:
     needs:
       - plan
-    if: ${{ needs.plan.outputs.publishing == 'true' || fromJson(needs.plan.outputs.val).ci.github.pr_run_mode == 'upload' || inputs.tag == 'dry-run' }}
-    uses: ./.github/workflows/build-binaries.yml
+    uses: ./.github/workflows/build-wheels.yml
     with:
-      plan: ${{ needs.plan.outputs.val }}
-    secrets: inherit
+      release-version: ${{ needs.plan.outputs.release_version }}
+
+  build-sdist:
+    needs:
+      - plan
+    uses: ./.github/workflows/build-sdist.yml
+    with:
+      release-version: ${{ needs.plan.outputs.release_version }}
 
   publish-pypi:
     needs:
-      - plan
+      - release-version
       - build-wheel
     uses: ./.github/workflows/publish-pypi.yml
     with:
-      plan: ${{ needs.plan.outputs.val }}
-    secrets: inherit
-    # publish jobs get escalated permissions
-    permissions:
-      "id-token": "write"
-      "packages": "write"
+      release-version: ${{ needs.plan.outputs.release_version }}
+      dry-run: ${{ needs.plan.outputs.dry_run == 'true' }}

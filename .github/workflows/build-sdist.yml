@@ -4,13 +4,14 @@
 name: "Build tarball"
 
 on:
-  push:
-    branches: [ main ]
   workflow_call:
     inputs:
-      plan:
+      release-version:
         required: true
         type: string
+      dry-run:
+        required: true
+        type: boolean
   pull_request:
     paths:
       # When we change pyproject.toml, we want to ensure that the maturin builds still work.
@@ -28,7 +29,6 @@ env:
 
 jobs:
   sdist:
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-build') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
