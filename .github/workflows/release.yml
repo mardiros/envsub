@@ -1,6 +1,4 @@
 name: Release
-permissions:
-  "contents": "write"
 
 on:
   push:
@@ -58,8 +56,7 @@ jobs:
 
   publish-pypi:
     needs:
-      - release-version
-      - build-wheel
+      - plan
     uses: ./.github/workflows/publish-pypi.yml
     with:
       release-version: ${{ needs.plan.outputs.release_version }}
