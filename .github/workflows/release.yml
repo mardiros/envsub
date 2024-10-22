@@ -1,0 +1,66 @@
+name: Release
+permissions:
+  "contents": "write"
+
+on:
+  push:
+    tags:
+      - 'v*'       # Automatically trigger on version tags
+      - 'dry-run'
+
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release Tag"
+        required: true
+        default: "dry-run"
+        type: string
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      release_version: "release-version.outputs.version"
+      dry_run: "release-version.outputs.dry_run"
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set Release Version
+      id: release-version
+      run: |
+        if [ "${{ github.event_name }}" == "push" ]; then
+          echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          echo "dry_run="${{ github.ref_name }} == 'dry-run'" >> $GITHUB_OUTPUT
+        else
+          echo "version=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+          echo "dry_run="${{ github.event.inputs.tag }} == 'dry-run'" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Display Release Version
+      run: echo "The release version is ${{ steps.release-version.outputs.version }}"
+
+
+  build-wheels:
+    needs:
+      - plan
+    uses: ./.github/workflows/build-wheels.yml
+    with:
+      release-version: ${{ needs.plan.outputs.release_version }}
+
+  build-sdist:
+    needs:
+      - plan
+    uses: ./.github/workflows/build-sdist.yml
+    with:
+      release-version: ${{ needs.plan.outputs.release_version }}
+
+  publish-pypi:
+    needs:
+      - release-version
+      - build-wheel
+    uses: ./.github/workflows/publish-pypi.yml
+    with:
+      release-version: ${{ needs.plan.outputs.release_version }}
+      dry-run: ${{ needs.plan.outputs.dry_run == 'true' }}

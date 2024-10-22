@@ -24,7 +24,6 @@ bindings = "pyo3"
 
 [tool.uv]
 dev-dependencies = [
-    "maturin>=1.7.4",
     "pip>=24.2",
     "pytest>=8.3.3",
     "pyyaml>=6.0.2",
