@@ -6,20 +6,46 @@ mod subst;
 #[pyclass]
 struct RustTextIOWrapper {
     inner: Py<PyAny>,
+    buffer: String,
 }
 
 #[pymethods]
 impl RustTextIOWrapper {
     #[new]
     pub fn new(input: Py<PyAny>) -> Self {
-        Self { inner: input }
+        Self {
+            inner: input,
+            buffer: String::new(),
+        }
     }
 
-    #[pyo3(signature = (_size=-1))]
-    fn read<'p>(slf: PyRef<'p, Self>, py: Python<'p>, _size: i32) -> PyResult<String> {
-        let result = slf.inner.call0(py)?;
-        let py_str: &str = result.extract(py)?;
-        Ok(subst::substr(py_str))
+    #[pyo3(signature = (size=-1))]
+    fn read<'p>(mut slf: PyRefMut<'p, Self>, py: Python<'p>, size: i32) -> PyResult<String> {
+        loop {
+            if size > 0 {
+                let unsize = size as usize;
+                if slf.buffer.len() >= unsize {
+                    break;
+                }
+            }
+            let result = slf.inner.call0(py)?;
+            let py_str: &str = result.extract(py)?;
+            if py_str.len() == 0 {
+                break;
+            }
+            let resp = subst::substr(py_str);
+            slf.buffer.push_str(resp.as_str());
+        }
+        if size > 0 {
+            let resp = std::mem::replace(&mut slf.buffer, String::new());
+            Ok(resp)
+        } else {
+            let unsize = size as usize;
+            let unsize = unsize.min(slf.buffer.len());
+            let resp = slf.buffer[..unsize].to_string();
+            slf.buffer = slf.buffer[unsize..].to_string();
+            Ok(resp)
+        }
     }
 
     fn __enter__<'p>(slf: PyRef<'p, Self>, _py: Python<'p>) -> PyResult<PyRef<'p, Self>> {

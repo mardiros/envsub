@@ -60,6 +60,29 @@ def envvars(params, monkeypatch):
             },
             id="Missing vars with default",
         ),
+        pytest.param(
+            {
+                "envvars": {
+                    "b": "b" * 1000,
+                    "e": "e" * 1000,
+                },
+                "stdin": [
+                    f"str1: {'a' * 1000}",
+                    "str2: ${b}",
+                    f"str3: {'c' * 1000}",
+                    f"str4: {'d' * 1000}",
+                    "str5: ${e}",
+                ],
+                "expected": {
+                    "str1": "a" * 1000,
+                    "str2": "b" * 1000,
+                    "str3": "c" * 1000,
+                    "str4": "d" * 1000,
+                    "str5": "e" * 1000,
+                },
+            },
+            id="More than 4096 chars (yaml buffer size)",
+        ),
     ],
 )
 def test_sub(envvars, params):
