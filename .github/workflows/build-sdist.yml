@@ -20,7 +20,7 @@ on:
       - .github/workflows/build-sdist.yml
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: sdist-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
