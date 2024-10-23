@@ -10,8 +10,11 @@ lf:
     uv run pytest --lf -vvv
 
 
-release: && changelog
-    $EDITOR pyproject.toml
+release major_minor_patch: && changelog
+    #!/bin/bash
+    cargo release {{major_minor_patch}} --no-confirm --no-publish --no-tag
+    export VERSION=$(head -n 10 Cargo.toml | grep version | sed 's/.*"\([^"]*\)".*/\1/')
+    sed -i 's/version = "\(.*\)"/version = "${VERSION}"/' pyproject.toml
     uv sync
 
 changelog:
