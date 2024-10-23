@@ -1,4 +1,4 @@
-## 0.1.2  -  2024-10-23
+## 0.1.3  -  2024-10-23
 
 * Fix CI pipeline while publishing using a tag 
 
