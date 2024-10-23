@@ -22,9 +22,7 @@ changelog:
     $EDITOR CHANGELOG.md
 
 publish:
-    git commit -am "Release $(poetry version -s)"
-    poetry build
-    poetry publish
+    git commit -am "Release $(uv run scripts/get_version.py)"
     git push
-    git tag "$(poetry version -s)"
-    git push origin "$(poetry version -s)"
+    git tag "v$(uv run scripts/get_version.py)"
+    git push origin "v$(uv run scripts/get_version.py)"
