@@ -32,8 +32,8 @@ jobs:
           echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           echo "dry_run="${{ github.ref_name }} == 'dry-run'" >> $GITHUB_OUTPUT
         else
-          echo "version=${{ github.event.inputs.tag || 'null'}}" >> $GITHUB_OUTPUT
-          echo "dry_run="${{ github.event.inputs.tag || 'null' }} == 'dry-run'" >> $GITHUB_OUTPUT
+          echo "version=${{ github.event.inputs.tag || '\'null\'' }}" >> $GITHUB_OUTPUT
+          echo "dry_run="${{ github.event.inputs.tag || '\'null\'' }} == 'dry-run'" >> $GITHUB_OUTPUT
         fi
 
     - name: Display Release Version
