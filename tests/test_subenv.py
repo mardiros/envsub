@@ -91,3 +91,61 @@ def test_sub(envvars, params):
         res = yaml.safe_load(upstream)
 
     assert res == params["expected"]
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        pytest.param(
+            {
+                "envvars": {"name": "Bob", "alt": "Harriet"},
+                "stdin": [
+                    "Hello, ${name}!",
+                    "Hello, also ${alt}!",
+                ],
+                "expected": [
+                    "Hello, Bob!\n",
+                    "Hello, also Harriet!",
+                ],
+            },
+            id="line by line",
+        ),
+    ],
+)
+def test_readline(envvars, params):
+    downstream = StringIO("\n".join(params["stdin"]))
+    upstream = sub(downstream)
+    line = upstream.readline()
+    assert line == params["expected"][0]
+    line = upstream.readline()
+    assert line == params["expected"][1]
+    line = upstream.readline()
+    assert line == ''
+    line = upstream.readline()
+    assert line == ''
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        pytest.param(
+            {
+                "envvars": {"name": "Bob", "alt": "Harriet"},
+                "stdin": [
+                    "Hello, ${name}!",
+                    "Hello, also ${alt}!",
+                ],
+                "expected": [
+                    "Hello, Bob!\n",
+                    "Hello, also Harriet!",
+                ],
+            },
+            id="all lines",
+        ),
+    ],
+)
+def test_readlines(envvars, params):
+    downstream = StringIO("\n".join(params["stdin"]))
+    upstream = sub(downstream)
+    lines = upstream.readlines()
+    assert lines == params["expected"]
