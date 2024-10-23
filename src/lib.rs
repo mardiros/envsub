@@ -20,7 +20,7 @@ impl RustTextIOWrapper {
     }
 
     #[pyo3(signature = (size=-1))]
-    fn read<'p>(mut slf: PyRefMut<'p, Self>, py: Python<'p>, size: i32) -> PyResult<String> {
+    pub fn read<'p>(mut slf: PyRefMut<'p, Self>, py: Python<'p>, size: i32) -> PyResult<String> {
         loop {
             if size > 0 {
                 let unsize = size as usize;
@@ -47,12 +47,31 @@ impl RustTextIOWrapper {
             Ok(resp)
         }
     }
+    #[pyo3(signature = ())]
+    pub fn readline<'p>(mut slf: PyRefMut<'p, Self>, py: Python<'p>) -> PyResult<String> {
+        let result = slf.inner.call0(py)?;
+        let py_str: &str = result.extract(py)?;
+        let resp = subst::substr(py_str);
+        slf.buffer.push_str(resp.as_str());
+        let lastchar = slf.buffer.find('\n');
+        match lastchar {
+            Some(pos) => {
+                let resp = slf.buffer[..pos + 1].to_string();
+                slf.buffer = slf.buffer[pos + 1..].to_string();
+                Ok(resp)
+            }
+            None => {
+                let resp = std::mem::replace(&mut slf.buffer, String::new());
+                Ok(resp)
+            }
+        }
+    }
 
-    fn __enter__<'p>(slf: PyRef<'p, Self>, _py: Python<'p>) -> PyResult<PyRef<'p, Self>> {
+    pub fn __enter__<'p>(slf: PyRef<'p, Self>, _py: Python<'p>) -> PyResult<PyRef<'p, Self>> {
         Ok(slf)
     }
 
-    fn __exit__(&mut self, _exc_type: PyObject, _exc_value: PyObject, _traceback: PyObject) {}
+    pub fn __exit__(&mut self, _exc_type: PyObject, _exc_value: PyObject, _traceback: PyObject) {}
 }
 
 #[pyfunction]
