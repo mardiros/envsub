@@ -123,3 +123,29 @@ def test_readline(envvars, params):
     assert line == ''
     line = upstream.readline()
     assert line == ''
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        pytest.param(
+            {
+                "envvars": {"name": "Bob", "alt": "Harriet"},
+                "stdin": [
+                    "Hello, ${name}!",
+                    "Hello, also ${alt}!",
+                ],
+                "expected": [
+                    "Hello, Bob!\n",
+                    "Hello, also Harriet!",
+                ],
+            },
+            id="all lines",
+        ),
+    ],
+)
+def test_readlines(envvars, params):
+    downstream = StringIO("\n".join(params["stdin"]))
+    upstream = sub(downstream)
+    lines = upstream.readlines()
+    assert lines == params["expected"]

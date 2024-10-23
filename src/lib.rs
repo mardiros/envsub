@@ -9,6 +9,17 @@ struct RustTextIOWrapper {
     buffer: String,
 }
 
+impl RustTextIOWrapper {
+    fn readstream<'p>(&mut self, py: Python<'p>) -> PyResult<Option<usize>> {
+        let result = self.inner.call0(py)?;
+        let py_str: &str = result.extract(py)?;
+        let resp = subst::substr(py_str);
+        self.buffer.push_str(resp.as_str());
+        let r = self.buffer.find('\n');
+        Ok(r)
+    }
+}
+
 #[pymethods]
 impl RustTextIOWrapper {
     #[new]
@@ -49,11 +60,7 @@ impl RustTextIOWrapper {
     }
     #[pyo3(signature = ())]
     pub fn readline<'p>(mut slf: PyRefMut<'p, Self>, py: Python<'p>) -> PyResult<String> {
-        let result = slf.inner.call0(py)?;
-        let py_str: &str = result.extract(py)?;
-        let resp = subst::substr(py_str);
-        slf.buffer.push_str(resp.as_str());
-        let lastchar = slf.buffer.find('\n');
+        let lastchar = slf.readstream(py)?;
         match lastchar {
             Some(pos) => {
                 let resp = slf.buffer[..pos + 1].to_string();
@@ -65,6 +72,26 @@ impl RustTextIOWrapper {
                 Ok(resp)
             }
         }
+    }
+    #[pyo3(signature = ())]
+    pub fn readlines<'p>(mut slf: PyRefMut<'p, Self>, py: Python<'p>) -> PyResult<Vec<String>> {
+        let mut res = Vec::new();
+        loop {
+            let lastchar = slf.readstream(py)?;
+            match lastchar {
+                Some(pos) => {
+                    let resp = slf.buffer[..pos + 1].to_string();
+                    slf.buffer = slf.buffer[pos + 1..].to_string();
+                    res.push(resp)
+                }
+                None => {
+                    let resp = std::mem::replace(&mut slf.buffer, String::new());
+                    res.push(resp);
+                    break;
+                }
+            }
+        }
+        return Ok(res);
     }
 
     pub fn __enter__<'p>(slf: PyRef<'p, Self>, _py: Python<'p>) -> PyResult<PyRef<'p, Self>> {
