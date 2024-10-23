@@ -23,7 +23,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set Release Version
       id: release-version
@@ -33,7 +33,7 @@ jobs:
           echo "dry_run="${{ github.ref_name }} == 'dry-run'" >> $GITHUB_OUTPUT
         else
           echo "version=${{ github.event.inputs.tag || 'null'}}" >> $GITHUB_OUTPUT
-          echo "dry_run="${{ github.event.inputs.tag g || 'null' }} == 'dry-run'" >> $GITHUB_OUTPUT
+          echo "dry_run="${{ github.event.inputs.tag || 'null' }} == 'dry-run'" >> $GITHUB_OUTPUT
         fi
 
     - name: Display Release Version
