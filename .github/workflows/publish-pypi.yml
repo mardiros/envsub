@@ -13,6 +13,9 @@ on:
       dry-run:
         required: true
         type: boolean
+    secrets:
+      PYPI_TOKEN:
+        required: true
 
 jobs:
   pypi-publish:
