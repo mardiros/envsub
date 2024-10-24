@@ -1,3 +1,7 @@
+## 0.1.15  -  2024-10-24
+
+* Fix CI pipeline while publishing using a tag 
+
 ## 0.1.14  -  2024-10-23
 
 * Fix CI pipeline while publishing using a tag 
