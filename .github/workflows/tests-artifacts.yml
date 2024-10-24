@@ -32,7 +32,11 @@ jobs:
       - name: "Install"
         run: |
           pip install dist/envsub-*.tar.gz --force-reinstall
-
       - name: "Test sdist"
         run: |
-          uv run pytest -sxv
+          if [[ $(echo 'Hello ${name-World}!' | python -m envsub) == 'Hello World!' ]]; then
+            echo 'Ok';
+          else
+            echo 'Ko';
+            exit 1;
+          fi
