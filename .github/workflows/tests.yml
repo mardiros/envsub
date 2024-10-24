@@ -33,9 +33,3 @@ jobs:
       - name: "Test sdist"
         run: |
           uv run pytest -sxv
-
-      - name: "Upload sdist"
-        uses: actions/upload-artifact@v4
-        with:
-          name: pypi_files_sdist
-          path: dist
