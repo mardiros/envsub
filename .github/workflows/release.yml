@@ -64,10 +64,20 @@ jobs:
       release-version: ${{ needs.plan.outputs.release_version }}
       dry-run: ${{ needs.plan.outputs.dry_run == 'true' }}
 
-  publish-pypi:
+  tests-artifacts:
     needs:
       - build-wheels
       - build-sdist
+    uses: ./.github/workflows/tests-artifacts.yml
+    with:
+      release-version: ${{ needs.plan.outputs.release_version }}
+      dry-run: ${{ needs.plan.outputs.dry_run == 'true' }}
+    secrets:
+      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
+  publish-pypi:
+    needs:
+      - tests-artifacts
     uses: ./.github/workflows/publish-pypi.yml
     with:
       release-version: ${{ needs.plan.outputs.release_version }}
