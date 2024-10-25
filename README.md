@@ -95,3 +95,9 @@ In this case the final result will be `{"hello": "world"}`.
 
 
 ## Alternatives
+
+Similar tools exists, but did not find any good one in python.
+
+The envsub lib has been created to replace non existing tool like
+[a8m/envsubst](https://github.com/a8m/envsubst) a Go binary that
+update the GNU envsubst that do not support default values.
