@@ -1,3 +1,8 @@
+## 0.1.16  -  2024-10-31
+
+* Update README
+* Smoke test the will to ensure the tarball is installable (wheel not tested yet)
+
 ## 0.1.15  -  2024-10-24
 
 * Fix CI pipeline while publishing using a tag 
