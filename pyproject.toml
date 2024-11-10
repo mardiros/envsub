@@ -19,6 +19,13 @@ dependencies = []
 [project.scripts]
 envsub = "envsub:sub"
 
+[project.urls]
+Homepage = "https://github.com/mardiros/envsub"
+Documentation = "https://github.com/mardiros/envsub/blob/main/README.md"
+Repository = "https://github.com/mardiros/envsub.git"
+Issues = "https://github.com/mardiros/envsub/issues"
+Changelog = "https://github.com/mardiros/envsub/blob/main/CHANGELOG.md"
+
 [tool.maturin]
 bindings = "pyo3"
 
