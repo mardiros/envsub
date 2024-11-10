@@ -1,3 +1,6 @@
+## 0.1.17  -  2024-11-10
+* Fix license inconcistency. This is MIT license.
+
 ## 0.1.16  -  2024-10-31
 
 * Update README
