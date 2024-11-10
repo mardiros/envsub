@@ -3,7 +3,7 @@ name = "envsub"
 version = "0.1.16"
 description = "A text preprocessing tool with environment variable substitution."
 readme = "README.md"
-license = "BSD-3-Clause"
+license = { text = "MIT License" }
 authors = [
     { name = "Guillaume Gauvrit", email = "guillaume@gauvr.it" }
 ]
