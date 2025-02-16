@@ -1,3 +1,13 @@
+"""
+A module executable from the shell, it read stdin, it writes std out.
+
+```bash
+$ echo "db: ${DATABASE_URL-sqlite:///}" > config.yml
+$ cat config.yml | python -m envsub
+db: sqlite:///
+```
+"""
+
 import sys
 from .envsub import sub
 

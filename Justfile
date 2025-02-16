@@ -3,6 +3,18 @@ default_testsuite:='tests'
 develop:
   uv run maturin develop
 
+install:
+    uv sync --group dev
+
+doc:
+    uv sync --group dev --group docs
+    cd docs && uv run make html
+    xdg-open docs/build/html/index.html
+
+cleandoc:
+    rm -rf docs/build
+    rm -rf docs/source/develop
+
 test testsuite=default_testsuite: develop
     uv run pytest -sxv {{testsuite}}
 
