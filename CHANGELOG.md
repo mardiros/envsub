@@ -1,3 +1,8 @@
+## 0.2.0  -  2025-02-16
+
+* Replace twine by us publish
+* Add some badges
+
 ## 0.1.18  -  2025-02-16
 
 * Publish documentation using github pages 

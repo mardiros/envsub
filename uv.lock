@@ -152,7 +152,7 @@ wheels = [
 
 [[package]]
 name = "envsub"
-version = "0.1.18"
+version = "0.2.0"
 source = { editable = "." }
 
 [package.optional-dependencies]

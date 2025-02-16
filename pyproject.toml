@@ -1,6 +1,6 @@
 [project]
 name = "envsub"
-version = "0.1.18"
+version = "0.2.0"
 description = "A text preprocessing tool with environment variable substitution."
 readme = "README.md"
 license = { text = "MIT License" }
