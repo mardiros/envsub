@@ -1,3 +1,7 @@
+## 0.1.18  -  2025-02-16
+
+* Publish documentation using github pages 
+
 ## 0.1.17  -  2024-11-10
 * Fix license inconcistency. This is MIT license.
 
