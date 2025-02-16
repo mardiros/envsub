@@ -4,7 +4,8 @@ version = "0.2.0"
 authors = ["Guillaume Gauvrit <guillaume@gauvr.it>"]
 edition = "2021"
 description = "A text preprocessing tool with environment variable substitution and default value support."
-license = "BSD-3-Clause"
+license = "MIT"
+license-file = "LICENSE"
 readme = "README.md"
 
 [dependencies]
