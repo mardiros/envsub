@@ -1,5 +1,9 @@
 # envsub
 
+[![Documentation](https://github.com/mardiros/envsub/actions/workflows/publish-doc.yml/badge.svg)](https://mardiros.github.io/envsub/)
+[![Continuous Integration](https://github.com/mardiros/envsub/actions/workflows/tests.yml/badge.svg)](https://github.com/mardiros/envsub/actions/workflows/tests.yml)
+[![Maintainability](https://api.codeclimate.com/v1/badges/a63ad49239e41de4f6b7/maintainability)](https://codeclimate.com/github/mardiros/envsub/maintainability)
+
 **envsub** is a text preprocessing tool that performs environment variable
 substitution in files, with support for default values. Written in Rust and
 callable from Python, it provides a fast and reliable way to inject environment
