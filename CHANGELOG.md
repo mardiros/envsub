@@ -1,11 +1,15 @@
+## 0.2.1  -  2025-04-17
+
+* Fix links in documentation.
+
 ## 0.2.0  -  2025-02-16
 
-* Replace twine by us publish
-* Add some badges
+* Replace twine by us publish.
+* Add some badges.
 
 ## 0.1.18  -  2025-02-16
 
-* Publish documentation using github pages 
+* Publish documentation using github pages.
 
 ## 0.1.17  -  2024-11-10
 * Fix license inconcistency. This is MIT license.

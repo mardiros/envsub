@@ -1,6 +1,6 @@
 [package]
 name = "envsub"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Guillaume Gauvrit <guillaume@gauvr.it>"]
 edition = "2021"
 description = "A text preprocessing tool with environment variable substitution and default value support."
