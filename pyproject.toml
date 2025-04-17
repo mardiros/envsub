@@ -47,11 +47,11 @@ docs = [
 envsub = "envsub:sub"
 
 [project.urls]
-Homepage = "https://mardiros.github.io/envsub/"
-Documentation = "https://mardiros.github.io/mardiros/envsub"
+Homepage = "https://github.com/mardiros/envsub/"
+Documentation = "https://mardiros.github.io/envsub/"
 Repository = "https://github.com/mardiros/envsub.git"
 Issues = "https://github.com/mardiros/envsub/issues"
-Changelog = "https://mardiros.github.io/mardiros/envsub/changelog.html"
+Changelog = "https://mardiros.github.io/envsub/changelog.html"
 
 [tool.maturin]
 bindings = "pyo3"
