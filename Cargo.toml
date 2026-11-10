@@ -2,14 +2,14 @@
 name = "envsub"
 version = "0.2.1"
 authors = ["Guillaume Gauvrit <guillaume@gauvr.it>"]
-edition = "2021"
+edition = "2024"
 description = "A text preprocessing tool with environment variable substitution and default value support."
 license = "MIT"
 license-file = "LICENSE"
 readme = "README.md"
 
 [dependencies]
-pyo3 = { version = "0.22.5", features = ["extension-module"] }
+pyo3 = { version = "0.29", features = ["abi3-py311", "extension-module"] }
 
 [lib]
 name = "envsub"

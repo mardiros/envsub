@@ -57,5 +57,5 @@ Changelog = "https://mardiros.github.io/envsub/changelog.html"
 bindings = "pyo3"
 
 [build-system]
-requires = ["maturin>=1.0,<2.0"]
+requires = ["maturin>=1.16,<2.0"]
 build-backend = "maturin"
