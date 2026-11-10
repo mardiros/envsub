@@ -5,7 +5,7 @@ description = "A text preprocessing tool with environment variable substitution.
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Guillaume Gauvrit", email = "guillaume@gauvr.it" }]
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 keywords = ["environment", "substitution", "variables"]
 classifiers = [
     "License :: OSI Approved :: MIT License",
