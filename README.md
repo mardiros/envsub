@@ -61,9 +61,32 @@ with open("/path/to/file.json", "r") as downstream:
 ```
 
 
+### envsub CLI
+
+The cli command is usefull to validate that the configuration is valid.
+
+For example, inside docker, environment variables are widely used to configure
+a service, if you have some text filed config that are used to configure services,
+validating that expected values are replaced using a shell.
+
+```bash
+# example of config file
+echo 'db: ${DATABASE_URL}' > config.yml
+export DATABASE_URL="sqlite:///"
+
+# replacing using python module, read for stdin, write to stdout.
+python -m envsub < config.yml
+db: sqlite:///
+
+# or using `envsub` command.
+envsub < config.yml
+db: sqlite:///
+```
+
+
 ### Substitution format
 
-envsubst subsitute variable format that are curly-braced, like in bash.
+envsub subsitute variable format that are curly-braced, like in bash.
 
 ```json
 {"hello": "${NAME}"}
@@ -96,6 +119,13 @@ Alternatively, a default value can be set in the variable, using a `-` value.
 In this case the final result will be `{"hello": "world"}`.
 
 
+## List of libraries using envsub
+
+Here is a curative list of projects that natively replace env vars while loading their
+configs using envsub:
+
+* [plaster-yaml](https://pypi.org/project/plaster-yaml/)
+* [celery-yaml](https://pypi.org/project/celery-yaml/)
 
 ## Alternatives
 

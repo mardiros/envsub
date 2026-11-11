@@ -2,7 +2,7 @@
 A module executable from the shell, it read stdin, it writes std out.
 
 ```bash
-$ echo "db: ${DATABASE_URL-sqlite:///}" > config.yml
+$ echo 'db: ${DATABASE_URL-sqlite:///}' > config.yml
 $ python -m envsub < config.yml
 db: sqlite:///
 ```
