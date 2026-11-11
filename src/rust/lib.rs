@@ -98,7 +98,8 @@ impl RustTextIOWrapper {
         Ok(slf)
     }
 
-    pub fn __exit__(&mut self, _exc_type: Py<PyAny>, _exc_value: Py<PyAny>, _traceback: Py<PyAny>) {}
+    pub fn __exit__(&mut self, _exc_type: Py<PyAny>, _exc_value: Py<PyAny>, _traceback: Py<PyAny>) {
+    }
 }
 
 #[pyfunction]

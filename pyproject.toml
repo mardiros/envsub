@@ -42,7 +42,6 @@ docs = [
     "myst-parser >=4.0.0,<5; python_version >= '3.10'",
 ]
 
-
 [project.scripts]
 envsub = "envsub:sub"
 
@@ -53,8 +52,16 @@ Repository = "https://github.com/mardiros/envsub.git"
 Issues = "https://github.com/mardiros/envsub/issues"
 Changelog = "https://mardiros.github.io/envsub/changelog.html"
 
+[tool.pyright]
+extraPaths = ["src/python"]
+include = ["src/python", "tests"]
+typeCheckingMode = "strict"
+reportMissingTypeStubs = false
+venvPath = ".venv"
+
 [tool.maturin]
 bindings = "pyo3"
+python-source = "src/python"
 
 [build-system]
 requires = ["maturin>=1.16,<2.0"]
