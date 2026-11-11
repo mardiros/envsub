@@ -1,3 +1,8 @@
+## 1.0.0  -  2026-11-11
+
+* Add support of python 3.14 and 3.15
+* Remove support of python 3.9 and 3.10 
+
 ## 0.2.1  -  2025-04-17
 
 * Fix links in documentation.
