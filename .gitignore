@@ -11,4 +11,4 @@ wheels/
 
 # Rust stuff
 target
-envsub/*.so
+src/python/envsub/*.so

@@ -25,6 +25,12 @@ lf:
     uv run pytest --lf -vvv
 
 
+fmt:
+    cargo fmt
+    uv run ruff check --fix .
+    uv run ruff format src/python tests
+
+
 release major_minor_patch: && changelog
     #!/bin/bash
     cargo release {{major_minor_patch}} --no-confirm --no-tag --no-push --no-publish --execute

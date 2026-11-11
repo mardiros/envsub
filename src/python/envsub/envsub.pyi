@@ -2,7 +2,6 @@
 
 from typing import TextIO
 
-
 def sub(downstream: TextIO) -> TextIO:
     """
     Replace all the envar from a downstream and return an upstream.

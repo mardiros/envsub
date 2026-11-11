@@ -1,9 +1,7 @@
-import os
-
 from io import StringIO
+
 import pytest
 import yaml
-
 from envsub import sub
 
 
@@ -120,9 +118,9 @@ def test_readline(envvars, params):
     line = upstream.readline()
     assert line == params["expected"][1]
     line = upstream.readline()
-    assert line == ''
+    assert line == ""
     line = upstream.readline()
-    assert line == ''
+    assert line == ""
 
 
 @pytest.mark.parametrize(
