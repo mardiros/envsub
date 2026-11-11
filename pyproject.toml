@@ -43,7 +43,7 @@ docs = [
 ]
 
 [project.scripts]
-envsub = "envsub:sub"
+envsub = "envsub.__main__:main"
 
 [project.urls]
 Homepage = "https://github.com/mardiros/envsub/"
