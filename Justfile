@@ -9,6 +9,9 @@ install:
 update:
     uv sync --group dev
 
+upgrade:
+    uv sync --group dev --upgrade
+
 doc:
     uv sync --group dev --group docs
     cd docs && uv run make html
