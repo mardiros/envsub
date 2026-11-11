@@ -47,7 +47,7 @@ changelog:
     $EDITOR CHANGELOG.md
 
 publish:
-    git commit -am "Release $(uv run scripts/get_version.py)"
+    git commit -am "Release $(uv version --short --no-color)"
     git push
-    git tag "v$(uv run scripts/get_version.py)"
-    git push origin "v$(uv run scripts/get_version.py)"
+    git tag "v$(uv version --short --no-color)"
+    git push origin "v$(uv version --short --no-color)"
