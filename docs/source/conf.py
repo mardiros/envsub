@@ -47,7 +47,7 @@ extensions = [
 ]
 
 autodoc2_packages = [
-    {"path": str(rootpath / "envsub")},
+    {"path": str(rootpath / "src" / "python" / "envsub")},
 ]
 
 autodoc2_module_all_regexes = [
